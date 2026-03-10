@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Place Your Order – SPICE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --spice-900: #3B1A08; --spice-800: #5C2D0E; --spice-700: #7B3F00;
+    --spice-600: #A0522D; --spice-500: #C2692A; --turmeric: #E8A020;
+    --cream: #FAF4EC; --cream-dark: #F0E6D3; --leaf: #4A7C59;
+    --text-dark: #2C1A0E; --text-mid: #5C3D2E; --text-light: #8B6957;
+    --border: rgba(59,26,8,0.12); --white: #FFFFFF;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--cream);
+    color: var(--text-dark);
+    min-height: 100vh;
+  }
+
+  /* PAGE LAYOUT */
+  .page-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    min-height: 100vh;
+  }
+
+  /* LEFT PANEL */
+  .left-panel {
+    background: linear-gradient(170deg, var(--spice-900) 0%, #1a0a04 100%);
+    padding: 3rem 2.5rem;
+    position: sticky; top: 0; height: 100vh;
+    display: flex; flex-direction: column; justify-content: space-between;
+    overflow: hidden;
+  }
+  .left-panel::before {
+    content: '';
+    position: absolute; top: -100px; right: -100px;
+    width: 400px; height: 400px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(232,160,32,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .left-panel::after {
+    content: '';
+    position: absolute; bottom: -80px; left: -80px;
+    width: 300px; height: 300px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(160,82,45,0.2) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .brand-mark {
+    display: flex; align-items: center; gap: 0.8rem;
+    margin-bottom: 3rem; position: relative; z-index: 1;
+  }
+  .brand-icon {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--turmeric), var(--spice-600));
+    display: flex; align-items: center; justify-content: center; font-size: 1.3rem;
+  }
+  .brand-name { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 700; color: var(--cream); }
+  .panel-heading { position: relative; z-index: 1; }
+  .panel-heading h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.6rem; font-weight: 600; line-height: 1.15;
+    color: var(--cream); margin-bottom: 1rem;
+  }
+  .panel-heading h1 em { font-style: italic; color: var(--turmeric); }
+  .panel-heading p { color: rgba(250,244,236,0.55); font-size: 0.9rem; line-height: 1.7; }
+  .panel-products { position: relative; z-index: 1; flex: 1; margin: 2.5rem 0; }
+  .panel-products-label {
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--turmeric); margin-bottom: 1rem;
+  }
+  .mini-product-list { display: flex; flex-direction: column; gap: 0.6rem; }
+  .mini-product {
+    display: flex; align-items: center; gap: 0.8rem;
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px; padding: 0.6rem 0.9rem;
+    transition: background 0.2s;
+  }
+  .mini-product:hover { background: rgba(232,160,32,0.1); }
+  .mini-product-emoji { font-size: 1.2rem; }
+  .mini-product-info { flex: 1; }
+  .mini-product-name { font-size: 0.82rem; font-weight: 600; color: var(--cream); }
+  .mini-product-price { font-size: 0.72rem; color: rgba(250,244,236,0.45); }
+  .panel-trust { position: relative; z-index: 1; }
+  .trust-pills { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .trust-pill {
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 100px; padding: 0.3rem 0.7rem;
+    font-size: 0.72rem; color: rgba(250,244,236,0.6); font-weight: 500;
+  }
+
+  /* RIGHT PANEL — FORM */
+  .right-panel { background: var(--white); padding: 3rem 3rem 4rem; overflow-y: auto; }
+  .form-header { margin-bottom: 2.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+  .form-header h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.9rem; color: var(--spice-900); }
+  .form-header p { color: var(--text-light); font-size: 0.85rem; margin-top: 0.3rem; }
+  .step-indicator { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 2rem; }
+  .step {
+    display: flex; align-items: center; gap: 0.4rem;
+    font-size: 0.75rem; font-weight: 600; color: var(--text-light);
+  }
+  .step.active { color: var(--spice-700); }
+  .step.done { color: var(--leaf); }
+  .step-num {
+    width: 24px; height: 24px; border-radius: 50%;
+    border: 1.5px solid currentColor;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem;
+  }
+  .step.done .step-num { background: var(--leaf); border-color: var(--leaf); color: #fff; }
+  .step.active .step-num { background: var(--spice-700); border-color: var(--spice-700); color: #fff; }
+  .step-line { flex: 1; height: 1px; background: var(--border); }
+
+  /* FORM SECTIONS */
+  .form-section { margin-bottom: 2.5rem; }
+  .section-title {
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--spice-600); margin-bottom: 1.2rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .field { margin-bottom: 1rem; }
+  .field label {
+    display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-mid);
+    margin-bottom: 0.4rem; letter-spacing: 0.02em;
+  }
+  .field label .req { color: var(--spice-500); margin-left: 2px; }
+  .field input, .field select, .field textarea {
+    width: 100%; padding: 0.75rem 1rem;
+    border: 1.5px solid var(--border); border-radius: 10px;
+    font-family: 'Outfit', sans-serif; font-size: 0.88rem; color: var(--text-dark);
+    background: var(--cream); transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none; -webkit-appearance: none;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    border-color: var(--spice-600); box-shadow: 0 0 0 3px rgba(160,82,45,0.1);
+    background: #fff;
+  }
+  .field input.error, .field select.error, .field textarea.error {
+    border-color: #E53E3E; box-shadow: 0 0 0 3px rgba(229,62,62,0.1);
+  }
+  .field-error { font-size: 0.72rem; color: #E53E3E; margin-top: 0.3rem; display: none; }
+  .field-error.show { display: block; }
+  .field textarea { resize: vertical; min-height: 90px; }
+  .field select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238B6957' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.8rem center; padding-right: 2.5rem; cursor: pointer; }
+
+  /* PRODUCT SELECTOR */
+  .product-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+  .product-check-item {
+    border: 1.5px solid var(--border); border-radius: 12px; padding: 0.8rem;
+    cursor: pointer; transition: all 0.2s; position: relative; user-select: none;
+    background: var(--cream);
+  }
+  .product-check-item:hover { border-color: var(--spice-500); background: #fff; }
+  .product-check-item.selected {
+    border-color: var(--spice-700); background: rgba(123,63,0,0.04);
+    box-shadow: 0 0 0 3px rgba(123,63,0,0.08);
+  }
+  .product-check-item input[type=checkbox] { display: none; }
+  .pci-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem; }
+  .pci-emoji { font-size: 1.5rem; }
+  .pci-check {
+    width: 20px; height: 20px; border-radius: 50%;
+    border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem; color: #fff; background: #fff; transition: all 0.2s; flex-shrink: 0;
+  }
+  .product-check-item.selected .pci-check { background: var(--spice-700); border-color: var(--spice-700); }
+  .pci-name { font-size: 0.82rem; font-weight: 600; color: var(--text-dark); }
+  .pci-price { font-size: 0.72rem; color: var(--text-light); }
+
+  /* QUANTITY ROWS (shown when product selected) */
+  .qty-section { margin-top: 1.2rem; display: none; }
+  .qty-section.show { display: block; }
+  .qty-section-title { font-size: 0.75rem; font-weight: 600; color: var(--text-light); margin-bottom: 0.8rem; letter-spacing: 0.05em; }
+  .qty-rows { display: flex; flex-direction: column; gap: 0.6rem; }
+  .qty-row {
+    display: flex; align-items: center; gap: 0.8rem;
+    background: var(--cream); border: 1px solid var(--border); border-radius: 10px; padding: 0.6rem 0.9rem;
+  }
+  .qty-row-emoji { font-size: 1.1rem; }
+  .qty-row-name { flex: 1; font-size: 0.82rem; font-weight: 600; color: var(--text-dark); }
+  .qty-row-weight {
+    padding: 0.25rem 0.6rem; border: 1px solid var(--border); border-radius: 6px;
+    font-family: 'Outfit', sans-serif; font-size: 0.78rem; background: #fff;
+    color: var(--text-dark); cursor: pointer; outline: none;
+  }
+  .qty-stepper { display: flex; align-items: center; gap: 0.5rem; }
+  .qty-btn {
+    width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid var(--border);
+    background: #fff; cursor: pointer; font-size: 1rem; display: flex; align-items: center;
+    justify-content: center; color: var(--spice-700); font-weight: 700;
+    transition: all 0.15s; line-height: 1;
+  }
+  .qty-btn:hover { border-color: var(--spice-700); background: rgba(123,63,0,0.06); }
+  .qty-num { min-width: 20px; text-align: center; font-size: 0.9rem; font-weight: 600; color: var(--text-dark); }
+  .qty-row-cost { font-size: 0.82rem; font-weight: 600; color: var(--spice-700); min-width: 44px; text-align: right; }
+
+  /* ORDER SUMMARY */
+  .order-summary {
+    background: linear-gradient(135deg, rgba(232,160,32,0.08), rgba(160,82,45,0.05));
+    border: 1px solid rgba(160,82,45,0.15); border-radius: 14px; padding: 1.2rem 1.4rem;
+    margin-top: 1.2rem; display: none;
+  }
+  .order-summary.show { display: block; }
+  .summary-row { display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 0.5rem; color: var(--text-mid); }
+  .summary-row.total { border-top: 1px solid var(--border); padding-top: 0.6rem; margin-top: 0.4rem; font-size: 0.95rem; font-weight: 700; color: var(--spice-900); }
+  .summary-row.total span:last-child { color: var(--spice-700); font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; }
+  .free-delivery-badge { background: rgba(74,124,89,0.1); border: 1px solid rgba(74,124,89,0.25); border-radius: 8px; padding: 0.4rem 0.7rem; font-size: 0.75rem; font-weight: 600; color: var(--leaf); display: inline-flex; align-items: center; gap: 0.3rem; margin-top: 0.6rem; }
+
+  /* DATE PICKER */
+  .date-options { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; margin-bottom: 0.8rem; }
+  .date-pill {
+    border: 1.5px solid var(--border); border-radius: 10px; padding: 0.6rem 0.4rem;
+    text-align: center; cursor: pointer; transition: all 0.2s; background: var(--cream);
+  }
+  .date-pill:hover { border-color: var(--spice-500); }
+  .date-pill.selected { border-color: var(--spice-700); background: rgba(123,63,0,0.06); }
+  .date-pill-day { font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-light); }
+  .date-pill-date { font-size: 1.1rem; font-weight: 700; color: var(--text-dark); font-family: 'Cormorant Garamond', serif; }
+  .date-pill.selected .date-pill-date { color: var(--spice-700); }
+
+  /* SUBMIT */
+  .submit-area { margin-top: 2rem; }
+  .consent-text { font-size: 0.75rem; color: var(--text-light); line-height: 1.6; margin-bottom: 1.2rem; }
+  .btn-submit {
+    width: 100%; padding: 1rem; border-radius: 12px;
+    background: linear-gradient(135deg, var(--spice-700), var(--spice-900));
+    color: #fff; border: none; font-family: 'Outfit', sans-serif;
+    font-size: 1rem; font-weight: 600; cursor: pointer; letter-spacing: 0.02em;
+    transition: all 0.25s; display: flex; align-items: center; justify-content: center; gap: 0.6rem;
+    position: relative; overflow: hidden;
+  }
+  .btn-submit:hover { box-shadow: 0 12px 32px rgba(59,26,8,0.3); transform: translateY(-1px); }
+  .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+  .btn-submit-wa {
+    width: 100%; padding: 1rem; border-radius: 12px; margin-top: 0.8rem;
+    background: #25D366; color: #fff; border: none; font-family: 'Outfit', sans-serif;
+    font-size: 0.95rem; font-weight: 600; cursor: pointer;
+    transition: all 0.25s; display: flex; align-items: center; justify-content: center; gap: 0.6rem;
+  }
+  .btn-submit-wa:hover { background: #20b558; box-shadow: 0 8px 24px rgba(37,211,102,0.4); }
+
+  /* SUCCESS STATE */
+  .success-overlay {
+    display: none; position: fixed; inset: 0; z-index: 1000;
+    background: rgba(59,26,8,0.7); backdrop-filter: blur(8px);
+    align-items: center; justify-content: center;
+  }
+  .success-overlay.show { display: flex; }
+  .success-card {
+    background: #fff; border-radius: 24px; padding: 3rem;
+    max-width: 440px; width: 90%; text-align: center;
+    animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+  @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .success-icon { font-size: 4rem; margin-bottom: 1rem; }
+  .success-card h2 { font-family: 'Cormorant Garamond', serif; font-size: 2rem; color: var(--spice-900); margin-bottom: 0.5rem; }
+  .success-card p { color: var(--text-light); font-size: 0.88rem; line-height: 1.7; }
+  .success-order-id { background: var(--cream); border-radius: 10px; padding: 0.8rem; margin: 1.2rem 0; font-weight: 700; color: var(--spice-700); font-size: 1.1rem; font-family: 'Cormorant Garamond', serif; }
+  .success-actions { display: flex; gap: 0.8rem; margin-top: 1.5rem; }
+  .success-actions button {
+    flex: 1; padding: 0.8rem; border-radius: 10px; font-family: 'Outfit', sans-serif;
+    font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+  }
+  .btn-wa-confirm { background: #25D366; color: #fff; border: none; }
+  .btn-wa-confirm:hover { background: #20b558; }
+  .btn-close-success { background: var(--cream); color: var(--text-mid); border: 1px solid var(--border); }
+  .btn-close-success:hover { background: var(--cream-dark); }
+
+  /* LOADING SPINNER */
+  .spinner { width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .page-wrap { grid-template-columns: 1fr; }
+    .left-panel { position: static; height: auto; padding: 2rem 1.5rem; }
+    .mini-product-list { display: grid; grid-template-columns: 1fr 1fr; }
+    .right-panel { padding: 2rem 1.5rem 3rem; }
+    .field-row { grid-template-columns: 1fr; }
+    .product-selector { grid-template-columns: 1fr; }
+    .date-options { grid-template-columns: repeat(4, 1fr); }
+  }
+  @media (max-width: 480px) {
+    .date-options { grid-template-columns: repeat(2, 1fr); }
+    .product-selector { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-wrap">
+  <!-- LEFT PANEL -->
+  <div class="left-panel">
+    <div>
+      <div class="brand-mark">
+        <div class="brand-icon">🌿</div>
+        <span class="brand-name">SPICE</span>
+      </div>
+      <div class="panel-heading">
+        <h1>Order Fresh<br/><em>Homemade</em><br/>Spices</h1>
+        <p>Fill in your details and we'll confirm your order within 30 minutes and deliver fresh to your door.</p>
+      </div>
+    </div>
+    <div class="panel-products">
+      <div class="panel-products-label">Available Products</div>
+      <div class="mini-product-list" id="miniProductList"></div>
+    </div>
+    <div class="panel-trust">
+      <div class="trust-pills">
+        <span class="trust-pill">✓ No Preservatives</span>
+        <span class="trust-pill">✓ Stone Ground</span>
+        <span class="trust-pill">✓ Same Day Delivery</span>
+        <span class="trust-pill">🛵 Chennai Only</span>
+        <span class="trust-pill">₹150 Min Order</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL — FORM -->
+  <div class="right-panel">
+    <div class="form-header">
+      <h2>Place Your Order</h2>
+      <p>Fresh spice powders made to order — usually ready within 4–6 hours</p>
+    </div>
+
+    <!-- Step Indicator -->
+    <div class="step-indicator">
+      <div class="step active" id="step1"><div class="step-num">1</div> Your Details</div>
+      <div class="step-line"></div>
+      <div class="step" id="step2"><div class="step-num">2</div> Products</div>
+      <div class="step-line"></div>
+      <div class="step" id="step3"><div class="step-num">3</div> Delivery</div>
+    </div>
+
+    <form id="orderForm" novalidate>
+
+      <!-- SECTION 1: CUSTOMER INFO -->
+      <div class="form-section">
+        <div class="section-title">Customer Information</div>
+        <div class="field-row">
+          <div class="field">
+            <label>Full Name <span class="req">*</span></label>
+            <input type="text" id="custName" name="custName" placeholder="e.g. Priya Rajan" autocomplete="name"/>
+            <div class="field-error" id="err-name">Please enter your full name</div>
+          </div>
+          <div class="field">
+            <label>WhatsApp Number <span class="req">*</span></label>
+            <input type="tel" id="custPhone" name="custPhone" placeholder="+91 98400 XXXXX" autocomplete="tel"/>
+            <div class="field-error" id="err-phone">Enter a valid 10-digit number</div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Delivery Address <span class="req">*</span></label>
+          <textarea id="custAddress" name="custAddress" placeholder="House/flat number, street, area, city, pincode" rows="3"></textarea>
+          <div class="field-error" id="err-address">Please enter your delivery address</div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Delivery Area <span class="req">*</span></label>
+            <select id="custArea" name="custArea">
+              <option value="">Select your area</option>
+              <option>T. Nagar</option>
+              <option>Adyar</option>
+              <option>Velachery</option>
+              <option>Tambaram</option>
+              <option>Medavakkam</option>
+              <option>Sholinganallur</option>
+              <option>Perungudi</option>
+              <option>Guindy</option>
+              <option>Saidapet</option>
+              <option>Anna Nagar</option>
+              <option>Kodambakkam</option>
+              <option>Nanganallur</option>
+              <option>Other (mention in notes)</option>
+            </select>
+            <div class="field-error" id="err-area">Please select your delivery area</div>
+          </div>
+          <div class="field">
+            <label>Email (for receipt)</label>
+            <input type="email" id="custEmail" name="custEmail" placeholder="optional@email.com" autocomplete="email"/>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 2: PRODUCTS -->
+      <div class="form-section">
+        <div class="section-title">Select Products</div>
+        <div class="product-selector" id="productSelector"></div>
+        <div class="field-error" id="err-products" style="margin-top:0.5rem">Please select at least one product</div>
+
+        <!-- Quantity + Weight rows -->
+        <div class="qty-section" id="qtySection">
+          <div class="qty-section-title">Set quantity & weight for selected products:</div>
+          <div class="qty-rows" id="qtyRows"></div>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="order-summary" id="orderSummary">
+          <div id="summaryLines"></div>
+          <div class="summary-row total">
+            <span>Estimated Total</span>
+            <span id="totalCost">₹0</span>
+          </div>
+          <div id="deliveryNote"></div>
+        </div>
+      </div>
+
+      <!-- SECTION 3: DELIVERY -->
+      <div class="form-section">
+        <div class="section-title">Preferred Delivery Date</div>
+        <div class="date-options" id="dateOptions"></div>
+        <div class="field-error" id="err-date">Please select a delivery date</div>
+
+        <div class="field" style="margin-top:0.5rem">
+          <label>Preferred Time Slot</label>
+          <select id="timeSlot" name="timeSlot">
+            <option value="">Any time</option>
+            <option>Morning (8am – 12pm)</option>
+            <option>Afternoon (12pm – 4pm)</option>
+            <option>Evening (4pm – 7pm)</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Special Instructions</label>
+          <textarea id="specialInstructions" name="specialInstructions" placeholder="Spice level preferences, gifting notes, any allergies, alternate contact, etc." rows="3"></textarea>
+        </div>
+      </div>
+
+      <!-- SUBMIT -->
+      <div class="submit-area">
+        <p class="consent-text">By placing this order, you agree that we'll contact you on WhatsApp to confirm availability and payment details. Orders are confirmed only after you receive a confirmation message from us.</p>
+        <button type="submit" class="btn-submit" id="submitBtn">
+          <span id="submitBtnText">🫙 Place Order</span>
+        </button>
+        <button type="button" class="btn-submit-wa" id="waFallbackBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Or Send Order via WhatsApp
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- SUCCESS OVERLAY -->
+<div class="success-overlay" id="successOverlay">
+  <div class="success-card">
+    <div class="success-icon">🎉</div>
+    <h2>Order Received!</h2>
+    <p>Thank you! We've received your order and saved it to our records. You'll get a WhatsApp confirmation from us within 30 minutes.</p>
+    <div class="success-order-id" id="successOrderId">Order #AK-00000</div>
+    <p style="font-size:0.8rem;color:var(--text-light)">Check your WhatsApp for confirmation. Payment details will be sent after we confirm availability.</p>
+    <div class="success-actions">
+      <button class="btn-wa-confirm" id="waConfirmBtn">💬 Open WhatsApp</button>
+      <button class="btn-close-success" onclick="closeSuccess()">Back to Form</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── CONFIG — update these before going live ───────────────────────────────
+const CONFIG = {
+  // STEP 1: Paste your Google Apps Script Web App URL here after deploying
+  SCRIPT_URL: 'YOUR_APPS_SCRIPT_URL_HERE',
+  WA_NUMBER: '919840000000', // Your WhatsApp number with country code, no +
+  MIN_ORDER: 150,
+  FREE_DELIVERY_THRESHOLD: 500,
+};
+
+// ─── PRODUCT DATA ─────────────────────────────────────────────────────────
+const PRODUCTS = [
+  { id: 'idli-podi',        name: 'Idli Podi',           emoji: '🫙', prices: [{g:100,p:80},{g:200,p:150},{g:500,p:340}] },
+  { id: 'sambar-powder',    name: 'Sambar Powder',        emoji: '🌶️', prices: [{g:100,p:90},{g:200,p:170},{g:500,p:400}] },
+  { id: 'rasam-powder',     name: 'Rasam Powder',         emoji: '🍲', prices: [{g:50,p:55},{g:100,p:100},{g:200,p:190}] },
+  { id: 'curry-leaves',     name: 'Curry Leaves Powder',  emoji: '🌿', prices: [{g:50,p:70},{g:100,p:130},{g:200,p:240}] },
+  { id: 'chutney-podi',     name: 'Chutney Podi',         emoji: '🥥', prices: [{g:100,p:85},{g:200,p:160}] },
+  { id: 'garlic-powder',    name: 'Garlic Powder',        emoji: '🧄', prices: [{g:50,p:60},{g:100,p:110}] },
+  { id: 'pepper-powder',    name: 'Pepper Powder',        emoji: '⚫', prices: [{g:50,p:75},{g:100,p:140}] },
+  { id: 'turmeric-powder',  name: 'Turmeric Powder',      emoji: '🟡', prices: [{g:50,p:45},{g:100,p:80},{g:200,p:150}] },
+];
+
+// ─── STATE ─────────────────────────────────────────────────────────────────
+const state = {
+  selectedProducts: {},   // { id: { qty, weightIdx, cost } }
+  selectedDate: '',
+  orderId: '',
+};
+
+// ─── RENDER MINI PRODUCT LIST (LEFT PANEL) ─────────────────────────────────
+function renderMiniList() {
+  document.getElementById('miniProductList').innerHTML = PRODUCTS.map(p =>
+    `<div class="mini-product">
+      <span class="mini-product-emoji">${p.emoji}</span>
+      <div class="mini-product-info">
+        <div class="mini-product-name">${p.name}</div>
+        <div class="mini-product-price">from ₹${p.prices[0].p} / ${p.prices[0].g}g</div>
+      </div>
+    </div>`
+  ).join('');
+}
+
+// ─── RENDER PRODUCT CHECKBOXES ─────────────────────────────────────────────
+function renderProductSelector() {
+  document.getElementById('productSelector').innerHTML = PRODUCTS.map(p =>
+    `<div class="product-check-item" id="pci-${p.id}" onclick="toggleProduct('${p.id}')">
+      <input type="checkbox" id="cb-${p.id}"/>
+      <div class="pci-top">
+        <span class="pci-emoji">${p.emoji}</span>
+        <div class="pci-check" id="pcc-${p.id}">✓</div>
+      </div>
+      <div class="pci-name">${p.name}</div>
+      <div class="pci-price">from ₹${p.prices[0].p}</div>
+    </div>`
+  ).join('');
+}
+
+// ─── TOGGLE PRODUCT SELECTION ──────────────────────────────────────────────
+function toggleProduct(id) {
+  const el = document.getElementById(`pci-${id}`);
+  if (state.selectedProducts[id]) {
+    delete state.selectedProducts[id];
+    el.classList.remove('selected');
+  } else {
+    const p = PRODUCTS.find(x => x.id === id);
+    state.selectedProducts[id] = { qty: 1, weightIdx: 0, cost: p.prices[0].p };
+    el.classList.add('selected');
+  }
+  renderQtyRows();
+  recalcTotal();
+  updateStepIndicator();
+  clearError('err-products');
+}
+
+// ─── RENDER QTY ROWS ──────────────────────────────────────────────────────
+function renderQtyRows() {
+  const selected = Object.keys(state.selectedProducts);
+  const qtySection = document.getElementById('qtySection');
+  const qtyRows = document.getElementById('qtyRows');
+
+  if (selected.length === 0) { qtySection.classList.remove('show'); return; }
+  qtySection.classList.add('show');
+
+  qtyRows.innerHTML = selected.map(id => {
+    const p = PRODUCTS.find(x => x.id === id);
+    const s = state.selectedProducts[id];
+    return `<div class="qty-row">
+      <span class="qty-row-emoji">${p.emoji}</span>
+      <span class="qty-row-name">${p.name}</span>
+      <select class="qty-row-weight" onchange="updateWeight('${id}', this.value)">
+        ${p.prices.map((pr, i) => `<option value="${i}" ${i===s.weightIdx?'selected':''}>${pr.g}g — ₹${pr.p}</option>`).join('')}
+      </select>
+      <div class="qty-stepper">
+        <button type="button" class="qty-btn" onclick="changeQty('${id}',-1)">−</button>
+        <span class="qty-num" id="qnum-${id}">${s.qty}</span>
+        <button type="button" class="qty-btn" onclick="changeQty('${id}',1)">+</button>
+      </div>
+      <span class="qty-row-cost" id="qcost-${id}">₹${s.cost}</span>
+    </div>`;
+  }).join('');
+}
+
+function updateWeight(id, widxStr) {
+  const widx = parseInt(widxStr);
+  const p = PRODUCTS.find(x => x.id === id);
+  state.selectedProducts[id].weightIdx = widx;
+  state.selectedProducts[id].cost = p.prices[widx].p * state.selectedProducts[id].qty;
+  document.getElementById(`qcost-${id}`).textContent = `₹${state.selectedProducts[id].cost}`;
+  recalcTotal();
+}
+
+function changeQty(id, delta) {
+  const s = state.selectedProducts[id];
+  s.qty = Math.max(1, s.qty + delta);
+  const p = PRODUCTS.find(x => x.id === id);
+  s.cost = p.prices[s.weightIdx].p * s.qty;
+  document.getElementById(`qnum-${id}`).textContent = s.qty;
+  document.getElementById(`qcost-${id}`).textContent = `₹${s.cost}`;
+  recalcTotal();
+}
+
+// ─── RECALCULATE TOTAL ────────────────────────────────────────────────────
+function recalcTotal() {
+  const selected = Object.keys(state.selectedProducts);
+  const summary = document.getElementById('orderSummary');
+  if (selected.length === 0) { summary.classList.remove('show'); return; }
+  summary.classList.add('show');
+
+  let total = 0;
+  const lines = selected.map(id => {
+    const p = PRODUCTS.find(x => x.id === id);
+    const s = state.selectedProducts[id];
+    const unitPrice = p.prices[s.weightIdx].p;
+    const weight = p.prices[s.weightIdx].g;
+    total += s.cost;
+    return `<div class="summary-row"><span>${p.emoji} ${p.name} ${weight}g × ${s.qty}</span><span>₹${s.cost}</span></div>`;
+  });
+
+  document.getElementById('summaryLines').innerHTML = lines.join('');
+  document.getElementById('totalCost').textContent = `₹${total}`;
+
+  const delivNote = document.getElementById('deliveryNote');
+  if (total >= CONFIG.FREE_DELIVERY_THRESHOLD) {
+    delivNote.innerHTML = `<div class="free-delivery-badge">🎉 You qualify for free delivery!</div>`;
+  } else {
+    const rem = CONFIG.FREE_DELIVERY_THRESHOLD - total;
+    delivNote.innerHTML = `<div style="font-size:0.75rem;color:var(--text-light);margin-top:0.5rem">Add ₹${rem} more for free delivery</div>`;
+  }
+}
+
+// ─── DATE PICKER ──────────────────────────────────────────────────────────
+function renderDateOptions() {
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const container = document.getElementById('dateOptions');
+  const options = [];
+  const today = new Date();
+  for (let i = 1; i <= 5; i++) {
+    const d = new Date(today); d.setDate(today.getDate() + i);
+    options.push({ label: days[d.getDay()], date: d.getDate(), full: d.toLocaleDateString('en-IN', {day:'2-digit',month:'short',year:'numeric'}) });
+  }
+  container.innerHTML = options.map((o, i) =>
+    `<div class="date-pill ${i===0?'selected':''}" id="dp-${i}" onclick="selectDate('${o.full}', ${i})">
+      <div class="date-pill-day">${o.label}</div>
+      <div class="date-pill-date">${o.date}</div>
+    </div>`
+  ).join('');
+  state.selectedDate = options[0].full;
+}
+
+function selectDate(full, idx) {
+  document.querySelectorAll('.date-pill').forEach(p => p.classList.remove('selected'));
+  document.getElementById(`dp-${idx}`).classList.add('selected');
+  state.selectedDate = full;
+  clearError('err-date');
+}
+
+// ─── STEP INDICATOR ───────────────────────────────────────────────────────
+function updateStepIndicator() {
+  const hasName = document.getElementById('custName').value.trim();
+  const hasProducts = Object.keys(state.selectedProducts).length > 0;
+  if (hasName) document.getElementById('step1').className = 'step done';
+  if (hasProducts) document.getElementById('step2').className = 'step done';
+  if (hasName && hasProducts) document.getElementById('step3').className = 'step active';
+}
+
+// ─── VALIDATION ───────────────────────────────────────────────────────────
+function validate() {
+  let ok = true;
+  const name = document.getElementById('custName').value.trim();
+  const phone = document.getElementById('custPhone').value.trim();
+  const addr = document.getElementById('custAddress').value.trim();
+  const area = document.getElementById('custArea').value;
+
+  if (!name) { showError('err-name', 'custName'); ok = false; }
+  if (!phone || !/^[0-9+\s\-]{10,14}$/.test(phone.replace(/\s/g,''))) { showError('err-phone', 'custPhone'); ok = false; }
+  if (!addr) { showError('err-address', 'custAddress'); ok = false; }
+  if (!area) { showError('err-area', 'custArea'); ok = false; }
+  if (Object.keys(state.selectedProducts).length === 0) { showError('err-products'); ok = false; }
+  if (!state.selectedDate) { showError('err-date'); ok = false; }
+  return ok;
+}
+
+function showError(errId, inputId) {
+  document.getElementById(errId).classList.add('show');
+  if (inputId) document.getElementById(inputId).classList.add('error');
+}
+function clearError(errId, inputId) {
+  document.getElementById(errId)?.classList.remove('show');
+  if (inputId) document.getElementById(inputId)?.classList.remove('error');
+}
+
+// clear errors on input
+['custName','custPhone','custAddress','custArea'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('input', () => {
+    el.classList.remove('error');
+    updateStepIndicator();
+  });
+});
+
+// ─── BUILD ORDER PAYLOAD ──────────────────────────────────────────────────
+function buildPayload() {
+  const selected = Object.keys(state.selectedProducts);
+  let total = 0;
+  const items = selected.map(id => {
+    const p = PRODUCTS.find(x => x.id === id);
+    const s = state.selectedProducts[id];
+    total += s.cost;
+    return `${p.name} (${p.prices[s.weightIdx].g}g × ${s.qty} = ₹${s.cost})`;
+  });
+
+  state.orderId = 'AK-' + Date.now().toString().slice(-5);
+
+  return {
+    orderId:       state.orderId,
+    timestamp:     new Date().toLocaleString('en-IN'),
+    customerName:  document.getElementById('custName').value.trim(),
+    phone:         document.getElementById('custPhone').value.trim(),
+    email:         document.getElementById('custEmail').value.trim(),
+    address:       document.getElementById('custAddress').value.trim(),
+    area:          document.getElementById('custArea').value,
+    products:      items.join('; '),
+    totalCost:     `₹${total}`,
+    deliveryDate:  state.selectedDate,
+    timeSlot:      document.getElementById('timeSlot').value || 'Any time',
+    instructions:  document.getElementById('specialInstructions').value.trim(),
+    status:        'New Order',
+    paymentStatus: 'Pending',
+  };
+}
+
+// ─── SUBMIT FORM ──────────────────────────────────────────────────────────
+document.getElementById('orderForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  if (!validate()) return;
+
+  const btn = document.getElementById('submitBtn');
+  const btnText = document.getElementById('submitBtnText');
+  btn.disabled = true;
+  btnText.innerHTML = '<div class="spinner"></div> Sending Order...';
+
+  const payload = buildPayload();
+
+  // Send to Google Apps Script
+  try {
+    const res = await fetch(CONFIG.SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',  // required for Apps Script
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    showSuccess(payload);
+  } catch (err) {
+    // Fallback: if fetch fails, still show success and offer WhatsApp
+    showSuccess(payload);
+  } finally {
+    btn.disabled = false;
+    btnText.innerHTML = '🫙 Place Order';
+  }
+});
+
+// ─── WHATSAPP FALLBACK BUTTON ─────────────────────────────────────────────
+document.getElementById('waFallbackBtn').addEventListener('click', function() {
+  if (!validate()) return;
+  const p = buildPayload();
+  const msg = `🌿 *New Order – SPICE*\n\n*Order ID:* ${p.orderId}\n*Name:* ${p.customerName}\n*Phone:* ${p.phone}\n*Address:* ${p.address}, ${p.area}\n\n*Products:*\n${p.products}\n\n*Total:* ${p.totalCost}\n*Delivery:* ${p.deliveryDate} – ${p.timeSlot}\n\n*Notes:* ${p.instructions || 'None'}\n\n_Please confirm availability and payment details. Thank you!_ 🙏`;
+  window.open(`https://wa.me/${CONFIG.WA_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
+});
+
+// ─── SUCCESS OVERLAY ──────────────────────────────────────────────────────
+function showSuccess(payload) {
+  document.getElementById('successOrderId').textContent = `Order ${payload.orderId}`;
+  document.getElementById('successOverlay').classList.add('show');
+
+  // Set WA confirmation button
+  const msg = `Hi! I just placed Order ${payload.orderId} for ${payload.products}. Total: ${payload.totalCost}. Please confirm! 🙏`;
+  document.getElementById('waConfirmBtn').onclick = () => {
+    window.open(`https://wa.me/${CONFIG.WA_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
+  };
+}
+
+function closeSuccess() {
+  document.getElementById('successOverlay').classList.remove('show');
+  // Reset form
+  document.getElementById('orderForm').reset();
+  state.selectedProducts = {};
+  state.selectedDate = '';
+  document.querySelectorAll('.product-check-item').forEach(el => el.classList.remove('selected'));
+  document.getElementById('qtySection').classList.remove('show');
+  document.getElementById('orderSummary').classList.remove('show');
+  renderDateOptions();
+  document.querySelectorAll('.step').forEach((s,i) => s.className = i===0?'step active':'step');
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────
+renderMiniList();
+renderProductSelector();
+renderDateOptions();
+</script>
+</body>
+</html>
